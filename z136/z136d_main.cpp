@@ -10,7 +10,7 @@
 #include "z136d_mod.h" 	//подключенный модуль
 #include <vector> 		//библиотека для массивов
 
-using namespace std; 	//пространство имён
+using namespace std; 	//пространство
 
 using namespace arrays;
 
