@@ -1,104 +1,121 @@
 //Бусыгина Татьяна, ИВТ-22
 //Класс движущаяся точка
-
-#define _USE_MATH_DEFINES
 #include "Class_MovingPoint.h"
-#include <cmath>
-#include <cassert> //библиотека для assert
-#include <string>
 #include <iostream>
-	
-//конструктор
-MovingPoint::MovingPoint()
+#include <vector>
+
+using namespace std;
+
+int main()
 {
-	start_speed = 0;
-	acceleration = 0;
+	MovingPoint Point; 																//Point экземпляр класса MovingPoint
+	double time, start_speed, acceleration, speed;
+	char check, check1;	
+	int i;
+
+	test();																			//тестирование методов
+
+	MovingPoint * Point_din = new MovingPoint;										//динамическое создание объекта
+	(*Point_din).set_start_speed(6); 												//работа с его методами первым способом
+	Point_din->set_acceleration(7); 												//работа с его методами вторым способом
+	cout << "Start speed: " << Point_din->get_start_speed() << ", acceleration: "
+	<< Point_din->get_acceleration() << endl;
+	delete Point_din; 																//удаление динамического объекта
+
+	MovingPoint Point_arr[1];														//cтатический массив из объектов
+	Point_arr[0].set_start_speed(9);
+	Point_arr[1].set_acceleration(10);
+	cout << "Start speed: " << Point_arr[0].get_start_speed() <<
+	", acceleration: " << Point_arr[1].get_acceleration() << endl;
+	MovingPoint Point_mo[2] {MovingPoint(3, 4),
+							 MovingPoint(5, 6) };
+
+	MovingPoint *Point_uk[2];														//массив из указателей на объекты
+	Point_uk[0] = new MovingPoint();
+	Point_uk[1] = new MovingPoint(3, 4);
+
+	delete Point_uk[0];
+	delete Point_uk[1];
+
+ 	MovingPoint * * Point_din_uk = new MovingPoint* [10];							//динамический массив из указателей на объекты
+ 	for (int i = 0; i < 10; i++) Point_din_uk[i] = new MovingPoint(); 				//создание
+ 	for (int i = 0; i < 10; i++) delete Point_din_uk[i]; 							//удаление
+	delete[] Point_din_uk; 															//удалить весь массив	   
+
+ 	vector<MovingPoint> Point_vec(3);												//массив с помощью векторов
+
+ 	vector<MovingPoint*> Point_vec_uk(3);											//массив с помощью векторов из указателей
+ 	for (int i = 0; i < Point_vec_uk.size(); i++) 
+ 		Point_vec_uk[i] = new MovingPoint(); 										//создание
+
+
+	cout << "Define a moving point" << endl << 
+	endl << "Enter start speed: "; 													//просим пользователя ввести начальную скорость точки
+	cin >> start_speed;
+	Point.set_start_speed(start_speed); 											//вызываем метод класса для считывания начальной скорости
+
+	cout << "Enter acceleration: "; 												//просим пользователя ввести ускорение точки
+	cin >> acceleration;
+	Point.set_acceleration(acceleration);											//вызываем метод класса для считывания ускорения
+	check1 = 'y';
+	while ((check1 == 'y') or (check1 == 'Y'))
+	{
+	cout << endl << "What do you want?" << endl << "1 - find distance" 				//узнаём, что пользователь хочет сделать
+	<< endl << "2 - find instantaneous speed" << endl << "3 - find average speed" 
+	<< endl << "4 - change start speed" << endl << "5 - change acceleration" << endl
+	<< "6 - watch start speed and acceleration";
+	cin >> i;
+	switch(i)	
+	{	
+
+	case 1:							
+		cout << endl << "How do you want to find the distance?" << endl 
+		<< "Using time - T, using speed - S" << endl;
+		cin >> check;
+		if ((check == 'T') or (check == 't'))
+		{
+			cout << "Enter time: "; 												//просим пользователя ввести время точки в пути
+			cin >> time;
+			cout << "Distance: " << Point.find_distanceT(time) << endl;				//вызываем метод класса для рассчёта пути через время
+		}
+		if ((check == 'S') or (check == 's'))
+		{
+			cout << "Enter instantaneous speed: "; 									//просим пользователя ввести мгновенную скорость точки
+			cin >> speed;
+			cout << "Distance: " << Point.find_distanceS(speed) << endl;			//вызываем метод класса для рассчёта пути через скорость
+		}
+		break;
+
+	case 2:
+		cout << "Enter time: "; 													//просим пользователя ввести время точки в пути
+		cin >> time;
+		cout << "Instantaneous speed: " << Point.find_speed(time) << endl; 			//вызываем метод класса для нахождения мгновенной скорости
+		break;
+
+	case 3: 
+		cout << "Enter instantaneous speed: "; 										//просим пользователя ввести мгновенную скорость точки
+		cin >> speed;
+		cout << "Average speed: " << Point.average_speed(speed) << endl;			//вызываем метод класса для нахождения средней скорости
+		break;
+
+	case 4:
+		cout << "Enter start speed: ";
+		cin >> start_speed;
+		Point.set_start_speed(start_speed); 										//изменение начальной скорости
+		break;
+
+	case 5:
+		cout << "Enter acceleration: ";
+		cin >> acceleration;
+		Point.set_acceleration(acceleration);										//изменение ускорения
+		break;
+
+	case 6:
+		cout << Point.output_string(); 												//вывод начальной скорости и ускорения
+		break;
+
+	}
+	cout << "Do you want to continue? Y/N" << endl; 								//спрашиваем у пользователя, хочет ли он продолжить программу
+	cin >> check1;
 }
-
-//конструктор с параметрами
-MovingPoint::MovingPoint(double start_speed1, double acceleration1)
-{
-	set_start_speed(start_speed1);
-	set_acceleration(acceleration1);
-
-}
-
-///геттер для начальной скорости, читает значение нач. скорости
-double MovingPoint::get_start_speed() const
-{
-	return start_speed;
-}
-
-///геттер для ускорения, читает значение ускорения
-double MovingPoint::get_acceleration() const
-{
-	return acceleration;
-}
-
-///сеттер для начальной скорости, ввод нач. скорости
-void MovingPoint::set_start_speed(double start_speed1)
-{
-	start_speed = start_speed1;
-}
-
-///сеттер для ускорения, ввод ускорения
-void MovingPoint::set_acceleration(double acceleration1)
-{
-	acceleration = acceleration1;
-}
-
-///нахождение расстояние за определённое время time
-double MovingPoint::find_distanceT(double time) const
-{
-	return start_speed * time + (acceleration * pow(time, 2)) / 2;
-}
-
-///нахождение расстояние с помощью начальной и мгновенной скорости
-double MovingPoint::find_distanceS(double speed) const 
-{
-	return (pow(speed, 2) - pow(start_speed, 2)) / (2 * acceleration);
-}
-
-///нахождение мгновенной скорости в определённое время time
-double MovingPoint::find_speed(double time) const
-{
-	return start_speed + acceleration * time;
-}
-
-///нахождение средней скорости
-double MovingPoint::average_speed(double speed) const
-{
-	return (speed + start_speed)/2;
-}
-
-///вывод начальной скорости и ускорения
-std::string MovingPoint::output_string() const
-{
-	std::string s = "Start speed: " + std::to_string(get_start_speed()) + "\n" + "Acceleration: " + std::to_string(get_acceleration()) + "\n";
-	return s;
-}
-
-///тестирование методов
-void test()
-{
-	MovingPoint Test; 									//Test экземпляр класса MovingPoint
-	// MovingPoint(3, 4);
-	Test.set_start_speed(3); 							//задаём значение начальной скорости через метод сет
-	Test.set_acceleration(4); 							//задаём значение ускорения через метод сет
-
-	assert(Test.average_speed(3) == 3); 				//тест метода нахождения средней скорости
-	assert(Test.average_speed(5) == 4); 
-	assert(Test.average_speed(10) == 6.5);
-
-	assert(Test.find_speed(6) == 27); 					//тест метода нахождения мгновенной скорости
-	assert(Test.find_speed(10) == 43);
-	assert(Test.find_speed(2) == 11);
-
-	assert(Test.find_distanceS(9) == 9); 				//тест метода нахождения пути через мгновенную скорость
-	assert(Test.find_distanceS(3) == 0);
-	assert(Test.find_distanceS(25) == 77);
-
-	assert(Test.find_distanceT(4) == 44); 				//тест метода нахождения пути через время
-	assert(Test.find_distanceT(6) == 90);
-	assert(Test.find_distanceT(8) == 152);
 }
