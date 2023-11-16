@@ -1,94 +1,104 @@
 //Бусыгина Татьяна, ИВТ-22
 //Класс движущаяся точка
+
+#define _USE_MATH_DEFINES
 #include "Class_MovingPoint.h"
+#include <cmath>
+#include <cassert> //библиотека для assert
+#include <string>
 #include <iostream>
-
-using namespace std;
-
-int main()
+	
+//конструктор
+MovingPoint::MovingPoint()
 {
-	MovingPoint Point; 																//Point экземпляр класса MovingPoint
-	double time, StartSpeed, acceleration, speed;
-	char check, check1;
-	check1 = 'y';
-	int i;
-
-	cout << "Define a moving point" << endl << 
-	endl << "Enter start speed: "; 													//просим пользователя ввести начальную скорость точки
-	cin >> StartSpeed;
-	Point.set_StartSpeed(StartSpeed); 												//вызываем метод класса для считывания начальной скорости
-
-	cout << "Enter acceleration: "; 												//просим пользователя ввести ускорение точки
-	cin >> acceleration;
-	Point.set_acceleration(acceleration);											//вызываем метод класса для считывания ускорения
-
-	while ((check1 == 'y') or (check1 == 'Y'))
-	{
-	cout << endl << "What do you want?" << endl << "1 - find distance" 				//узнаём, что пользователь хочет сделать
-	<< endl << "2 - find instantaneous speed" << endl << "3 - find average speed" << endl
-	<< "4 - watch start speed" << endl << "5 - watch acceleration" <<  endl;
-	cin >> i;
-	switch(i)	
-	{	
-
-	case 1:							
-		cout << endl << "How do you want to find the distance?" << endl 
-		<< "Using time - T, using speed - S" << endl;
-		cin >> check;
-		if ((check == 'T') or (check == 't'))
-		{
-			cout << "Enter time: "; 												//просим пользователя ввести время точки в пути
-			cin >> time;
-			cout << "Distance: " << Point.find_distanceT(time) << endl;				//вызываем метод класса для рассчёта пути через время
-		}
-		if ((check == 'S') or (check == 's'))
-		{
-			cout << "Enter instantaneous speed: "; 									//просим пользователя ввести мгновенную скорость точки
-			cin >> speed;
-			cout << "Distance: " << Point.find_distanceS(speed) << endl;			//вызываем метод класса для рассчёта пути через скорость
-		}
-		break;
-
-	case 2:
-		cout << "Enter time: "; 													//просим пользователя ввести время точки в пути
-		cin >> time;
-		cout << "Instantaneous speed: " << Point.find_speed(time) << endl; 			//вызываем метод класса для нахождения мгновенной скорости
-		break;
-
-	case 3: 
-		cout << "Enter instantaneous speed: "; 										//просим пользователя ввести мгновенную скорость точки
-		cin >> speed;
-		cout << "Average speed: " << Point.average_speed(speed) << endl;			//вызываем метод класса для нахождения средней скорости
-		break;
-
-	case 4:
-		cout << "Start speed: " << Point.get_StartSpeed() << endl;					//выводим значение начальной скорости
-		cout << "Do you want change start speed? Y/N"<< endl;						//узнаём у пользователя, нужно ли изменить значение
-		cin >> check;
-		if ((check == 'y') or (check == 'Y'))
-		{
-			cout << "Enter start speed: ";
-			cin >> StartSpeed;
-			Point.set_StartSpeed(StartSpeed); 										//изменение начальной скорости
-			
-		}
-		break;
-
-	case 5:
-		cout << "Acceleration: " << Point.get_acceleration() << endl; 				//выводим значение ускорения
-		cout << "Do you want change acceleration? Y/N"<< endl; 						//узнаём у пользователя, нужно ли изменить значение
-		cin >> check;
-		if ((check == 'y') or (check == 'Y'))
-		{
-			cout << "Enter acceleration: ";
-			cin >> acceleration;
-			Point.set_acceleration(acceleration);									//изменение ускорения
-			
-		}
-		break;
-
-	}
-	cout << "Do you want to continue? Y/N" << endl; 								//спрашиваем у пользователя, хочет ли он продолжить программу
-	cin >> check1;
+	start_speed = 0;
+	acceleration = 0;
 }
+
+//конструктор с параметрами
+MovingPoint::MovingPoint(double start_speed1, double acceleration1)
+{
+	set_start_speed(start_speed1);
+	set_acceleration(acceleration1);
+
+}
+
+///геттер для начальной скорости, читает значение нач. скорости
+double MovingPoint::get_start_speed() const
+{
+	return start_speed;
+}
+
+///геттер для ускорения, читает значение ускорения
+double MovingPoint::get_acceleration() const
+{
+	return acceleration;
+}
+
+///сеттер для начальной скорости, ввод нач. скорости
+void MovingPoint::set_start_speed(double start_speed1)
+{
+	start_speed = start_speed1;
+}
+
+///сеттер для ускорения, ввод ускорения
+void MovingPoint::set_acceleration(double acceleration1)
+{
+	acceleration = acceleration1;
+}
+
+///нахождение расстояние за определённое время time
+double MovingPoint::find_distanceT(double time) const
+{
+	return start_speed * time + (acceleration * pow(time, 2)) / 2;
+}
+
+///нахождение расстояние с помощью начальной и мгновенной скорости
+double MovingPoint::find_distanceS(double speed) const 
+{
+	return (pow(speed, 2) - pow(start_speed, 2)) / (2 * acceleration);
+}
+
+///нахождение мгновенной скорости в определённое время time
+double MovingPoint::find_speed(double time) const
+{
+	return start_speed + acceleration * time;
+}
+
+///нахождение средней скорости
+double MovingPoint::average_speed(double speed) const
+{
+	return (speed + start_speed)/2;
+}
+
+///вывод начальной скорости и ускорения
+std::string MovingPoint::output_string() const
+{
+	std::string s = "Start speed: " + std::to_string(get_start_speed()) + "\n" + "Acceleration: " + std::to_string(get_acceleration()) + "\n";
+	return s;
+}
+
+///тестирование методов
+void test()
+{
+	MovingPoint Test; 									//Test экземпляр класса MovingPoint
+	// MovingPoint(3, 4);
+	Test.set_start_speed(3); 							//задаём значение начальной скорости через метод сет
+	Test.set_acceleration(4); 							//задаём значение ускорения через метод сет
+
+	assert(Test.average_speed(3) == 3); 				//тест метода нахождения средней скорости
+	assert(Test.average_speed(5) == 4); 
+	assert(Test.average_speed(10) == 6.5);
+
+	assert(Test.find_speed(6) == 27); 					//тест метода нахождения мгновенной скорости
+	assert(Test.find_speed(10) == 43);
+	assert(Test.find_speed(2) == 11);
+
+	assert(Test.find_distanceS(9) == 9); 				//тест метода нахождения пути через мгновенную скорость
+	assert(Test.find_distanceS(3) == 0);
+	assert(Test.find_distanceS(25) == 77);
+
+	assert(Test.find_distanceT(4) == 44); 				//тест метода нахождения пути через время
+	assert(Test.find_distanceT(6) == 90);
+	assert(Test.find_distanceT(8) == 152);
 }

@@ -63,8 +63,7 @@ int main(int argc, char *argv[])
 			cout << endl << "Result: " << sum_sq(mass);					//выводим результат
 			mass.clear();												//очищаем массив			
 		}
-
-		if (carg == "create") 											//если пользователь хочет создать новый массив
+		else if (carg == "create") 											//если пользователь хочет создать новый массив
 		{
 			size_mas = stoul(argv[2]); 									//считываем размер массива в переменную size_mas									
 			up_limit = stoul(argv[3]);									//считываем верхнюю границу массива в переменную up_limit
