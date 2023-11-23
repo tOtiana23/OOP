@@ -7,6 +7,10 @@
 #include <cassert> //библиотека для assert
 #include <string>
 #include <iostream>
+#include <typeinfo>
+#include <fstream>
+#include <exception>
+
 	
 //конструктор
 MovingPoint::MovingPoint()
@@ -76,6 +80,40 @@ std::string MovingPoint::output_string() const
 {
 	std::string s = "Start speed: " + std::to_string(get_start_speed()) + "\n" + "Acceleration: " + std::to_string(get_acceleration()) + "\n";
 	return s;
+}
+
+///сохранение скорости и ускорения в бинарный файл
+void MovingPoint::save_point(MovingPoint& Point, const std::string& filename)
+{
+	std::ofstream file(filename, std::ios::binary);
+	if (file.is_open())
+	{
+		double temp;
+		temp = Point.get_acceleration();
+		file.write(reinterpret_cast< char*>(&temp), sizeof(temp));
+		temp = Point.get_start_speed();
+		file.write(reinterpret_cast< char*>(&temp), sizeof(temp));
+		file.close();
+	}
+	else {
+        throw std::runtime_error("File_is_not_found_:(");
+	}
+}
+
+///загрузка скорости и ускорения из бинарного файла
+void MovingPoint::load_point(MovingPoint& Point, const std::string& filename)
+{
+	std::ifstream file(filename, std::ios::binary);
+	if (file.is_open()) {
+ 		double temp;
+	file.read(reinterpret_cast<char*>(&temp), sizeof(temp));
+	Point.set_acceleration(temp);
+	file.read(reinterpret_cast<char*>(&temp), sizeof(temp));
+	Point.set_start_speed(temp);
+	}
+ 	else {
+       throw std::runtime_error("File_is_not_found_:(");
+	}
 }
 
 ///тестирование методов

@@ -39,6 +39,10 @@ public:
 	double average_speed(double speed) const;
 	///вывод начальной скорости и ускорения
 	std::string output_string() const;
+	///сохранение скорости и ускорения в бинарный файл
+	void save_point(MovingPoint& Point, const std::string& filename);
+	///загрузка скорости и ускорения из бинарного файла
+	void load_point(MovingPoint& Point, const std::string &filename);
 };
 
 	///тестирование методов

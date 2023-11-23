@@ -10,7 +10,7 @@ int main()
 {
 	MovingPoint Point; 																//Point экземпляр класса MovingPoint
 	double time, start_speed, acceleration, speed;
-	char check, check1;	
+	char check;	
 	int i;
 
 	test();																			//тестирование методов
@@ -22,7 +22,7 @@ int main()
 	<< Point_din->get_acceleration() << endl;
 	delete Point_din; 																//удаление динамического объекта
 
-	MovingPoint Point_arr[1];														//cтатический массив из объектов
+	MovingPoint Point_arr[10];														//cтатический массив из объектов из 10 объектов
 	Point_arr[0].set_start_speed(9);
 	Point_arr[1].set_acceleration(10);
 	cout << "Start speed: " << Point_arr[0].get_start_speed() <<
@@ -32,23 +32,56 @@ int main()
 
 	MovingPoint *Point_uk[2];														//массив из указателей на объекты
 	Point_uk[0] = new MovingPoint();
-	Point_uk[1] = new MovingPoint(3, 4);
-
+	Point_uk[1] = new MovingPoint();
+	Point_uk[0]->set_start_speed(11);
+	Point_uk[1]->set_acceleration(12);
+	cout << "Start speed: " << Point_uk[0]->get_start_speed() << ", acceleration: "
+	<< Point_uk[1]->get_acceleration() << endl;
 	delete Point_uk[0];
 	delete Point_uk[1];
 
- 	MovingPoint * * Point_din_uk = new MovingPoint* [10];							//динамический массив из указателей на объекты
- 	for (int i = 0; i < 10; i++) Point_din_uk[i] = new MovingPoint(); 				//создание
- 	for (int i = 0; i < 10; i++) delete Point_din_uk[i]; 							//удаление
+ 	MovingPoint**Point_din_uk = new MovingPoint*[10];								//динамический массив из указателей на объекты
+ 	for (int i = 0; i < 10; i++) 
+ 	{
+ 		Point_din_uk[i] = new MovingPoint(); 										//создание
+
+ 	}
+ 	Point_din_uk[0]->set_start_speed(13);
+	Point_din_uk[1]->set_acceleration(14);
+ 	cout << "Start speed: " << Point_din_uk[0]->get_start_speed() << ", acceleration: "
+	<< Point_din_uk[1]->get_acceleration() << endl;
+ 	for (int i = 0; i < 10; i++) 
+ 		delete Point_din_uk[i]; 													//удаление
 	delete[] Point_din_uk; 															//удалить весь массив	   
 
  	vector<MovingPoint> Point_vec(3);												//массив с помощью векторов
+ 	Point_vec[0].set_start_speed(15);
+ 	Point_vec[1].set_acceleration(16);
+ 	cout << "Start speed: " << Point_vec[0].get_start_speed() << ", acceleration: "
+	<< Point_vec[1].get_acceleration() << endl;
 
  	vector<MovingPoint*> Point_vec_uk(3);											//массив с помощью векторов из указателей
  	for (int i = 0; i < Point_vec_uk.size(); i++) 
  		Point_vec_uk[i] = new MovingPoint(); 										//создание
+ 	Point_vec_uk[0]->set_start_speed(17);
+ 	Point_vec_uk[1]->set_acceleration(18);
+ 	cout << "Start speed: " << Point_vec_uk[0]->get_start_speed() << ", acceleration: "
+	<< Point_vec_uk[1]->get_acceleration() << endl;
 
+	cout << "Load point? Y/N " << endl; 											//спращиваем у пользователя хочет ли он загрузить поля класса
+	cin >> check;
+	if ((check =='Y') or (check == 'y'))
+	{
+		cout << "Enter file name: ";
+		string file_name;
+		cin >> file_name;
+		Point.load_point(Point, file_name); 										//загружаем
+		cout << "Start speed: " << Point.get_start_speed() << endl 
+		<< "Enter acceleration: " << Point.get_acceleration();
+	}
 
+	else
+	{
 	cout << "Define a moving point" << endl << 
 	endl << "Enter start speed: "; 													//просим пользователя ввести начальную скорость точки
 	cin >> start_speed;
@@ -56,14 +89,15 @@ int main()
 
 	cout << "Enter acceleration: "; 												//просим пользователя ввести ускорение точки
 	cin >> acceleration;
-	Point.set_acceleration(acceleration);											//вызываем метод класса для считывания ускорения
-	check1 = 'y';
-	while ((check1 == 'y') or (check1 == 'Y'))
+	Point.set_acceleration(acceleration);											//вызываем метод класса для считывания ускорения	
+	}										
+	check = 'y';
+	while ((check == 'y') or (check == 'Y'))
 	{
 	cout << endl << "What do you want?" << endl << "1 - find distance" 				//узнаём, что пользователь хочет сделать
 	<< endl << "2 - find instantaneous speed" << endl << "3 - find average speed" 
 	<< endl << "4 - change start speed" << endl << "5 - change acceleration" << endl
-	<< "6 - watch start speed and acceleration";
+	<< "6 - watch start speed and acceleration" << endl << "7 - save"<< endl;
 	cin >> i;
 	switch(i)	
 	{	
@@ -114,8 +148,14 @@ int main()
 		cout << Point.output_string(); 												//вывод начальной скорости и ускорения
 		break;
 
+	case 7:
+		cout << "Enter file name: ";
+		string file_name;
+		cin >> file_name;
+		Point.save_point(Point, file_name);
+
 	}
 	cout << "Do you want to continue? Y/N" << endl; 								//спрашиваем у пользователя, хочет ли он продолжить программу
-	cin >> check1;
+	cin >> check;
 }
 }
