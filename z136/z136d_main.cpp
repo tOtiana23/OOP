@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 			cout << endl << "Result: " << sum_sq(mass);					//выводим результат
 			mass.clear();												//очищаем массив			
 		}
-		else if (carg == "create") 											//если пользователь хочет создать новый массив
+		else if (carg == "create") 										//если пользователь хочет создать новый массив
 		{
 			size_mas = stoul(argv[2]); 									//считываем размер массива в переменную size_mas									
 			up_limit = stoul(argv[3]);									//считываем верхнюю границу массива в переменную up_limit
@@ -115,32 +115,57 @@ int main(int argc, char *argv[])
 			cin >> check;
 			if ((check == 'Y') or (check == 'y'))
 			{
-				cout << "Print name file" << endl; 						//запрашиваем у пользователя имя файла
-				cin >> file_name;
-				array_to_file(mass, file_name); 						//вывод массива в текстовый файл
+				cout << "Save in text or bin file? T/B" << endl;
+				cin >> check;
+				if ((check == 'T') or (check == 't'))
+				{
+					cout << "Print name file (.txt)" << endl; 			//запрашиваем у пользователя имя файла
+					cin >> file_name;
+					array_to_file(mass, file_name);						//вывод массива в текстовый файл
+				}
+				else{
+					cout << "Print name file" << endl; 					//запрашиваем у пользователя имя файла
+					cin >> file_name;
+					array_to_bin_file(mass, file_name); 				//вывод массива в бинарный файл
+				}
 				cout << "Array saved" << endl;	
 			}
 			mass.clear();												//очищаем память
 		}									
 		else
 		{
-			cout << "Print name file" << endl; 							//запрашиваем у пользователя имя файла
-			cin >> file_name;
-			size_mas = array_size_from_file(file_name); 				//узнаём размера массива в файле
-			try
-			{
-				unsigned size = array_size_from_file(file_name);
-			}
-			catch(const exception& error)
-			{
-				cout << error.what();
-			}
-			vector<float> mass; 										//дин массив, пустой							
-			mass.resize(size_mas);										//выделяем память под заданное кол-во элементов
-			array_from_file(mass, size_mas, file_name);					//считываем массив из файла
-			print_mas(mass); 											//ф-ция вывода массива на экран
-			cout << endl << "Result: " << sum_sq(mass);					//выводим результат
-			mass.clear();												//очищаем память
+			cout << "Load from text or bin file? T/B" << endl;
+			cin >> check;
+			if ((check == 'T') or (check == 't')){
+				cout << "Print name file (.txt)" << endl; 				//запрашиваем у пользователя имя файла
+				cin >> file_name;
+				size_mas = array_size_from_file(file_name); 			//узнаём размера массива в файле
+				try
+				{
+					unsigned size = array_size_from_file(file_name);
+				}
+				catch(const exception& error)
+				{
+					cout << error.what();
+				}
+				vector<float> mass; 									//дин массив, пустой							
+				mass.resize(size_mas);									//выделяем память под заданное кол-во элементов
+				array_from_file(mass, size_mas, file_name);				//считываем массив из текстового файла
+				print_mas(mass); 
+				cout << endl << "Result: " << sum_sq(mass);				//выводим результат
+				mass.clear();											//очищаем память
+			}	
+			else
+			{	
+				cout << "Print name file" << endl; 						//запрашиваем у пользователя имя файла
+				cin >> file_name;
+				vector<float> mass; 									//дин массив, пустой
+				array_from_bin_file(mass, size_mas, file_name);			//считываем массив из бинарного файла
+				print_mas(mass); 
+				cout << endl << "Result: " << sum_sq(mass);				//выводим результат
+				mass.clear();											//очищаем память
+			}											
+			
 		}
 	}
 }

@@ -85,34 +85,36 @@ std::string MovingPoint::output_string() const
 ///сохранение скорости и ускорения в бинарный файл
 void MovingPoint::save_point(MovingPoint& Point, const std::string& filename)
 {
-	std::ofstream file(filename, std::ios::binary);
-	if (file.is_open())
+	std::ofstream file(filename, std::ios::binary); 			   //запись в файл
+	if (file.is_open())											   //проверяем, открыт ли файл
 	{
 		double temp;
-		temp = Point.get_acceleration();
-		file.write(reinterpret_cast< char*>(&temp), sizeof(temp));
-		temp = Point.get_start_speed();
-		file.write(reinterpret_cast< char*>(&temp), sizeof(temp));
-		file.close();
+		temp = Point.get_acceleration(); 						   //записываем ускорение во временную переменную 
+		file.write(reinterpret_cast< char*>(&temp), sizeof(temp)); //записываем ускорение в файл
+																   //reinterpret_cast используется для преобразования указателя некоторого типаданных в указатель другого типа 
+																   //sizeof возвращает размер переданной переменной в байтах
+		temp = Point.get_start_speed();							   //записываем начальную скорость во временную переменную 
+		file.write(reinterpret_cast< char*>(&temp), sizeof(temp)); //записываем начальную скорость в файл
+		file.close();											   //закрываем файл
 	}
 	else {
-        throw std::runtime_error("File_is_not_found_:(");
+        throw std::runtime_error("File_is_not_found_:("); 		   //если нет такого файла, то выводим ошибку
 	}
 }
 
 ///загрузка скорости и ускорения из бинарного файла
 void MovingPoint::load_point(MovingPoint& Point, const std::string& filename)
 {
-	std::ifstream file(filename, std::ios::binary);
+	std::ifstream file(filename, std::ios::binary); 				//чтение из файла
 	if (file.is_open()) {
  		double temp;
-	file.read(reinterpret_cast<char*>(&temp), sizeof(temp));
-	Point.set_acceleration(temp);
-	file.read(reinterpret_cast<char*>(&temp), sizeof(temp));
-	Point.set_start_speed(temp);
+	file.read(reinterpret_cast<char*>(&temp), sizeof(temp));		//читаем ускорение из файла
+	Point.set_acceleration(temp);									//записываем то, что прочитали
+	file.read(reinterpret_cast<char*>(&temp), sizeof(temp));		//читаем начальную скорость из файла
+	Point.set_start_speed(temp);									//записываем то, что прочитали
 	}
  	else {
-       throw std::runtime_error("File_is_not_found_:(");
+       throw std::runtime_error("File_is_not_found_:(");			//если нет такого файла, то выводим ошибку
 	}
 }
 
